@@ -325,6 +325,13 @@
       if (blockInfo.outputShape) res.json.outputShape = blockInfo.outputShape;
       return res;
     };
+    const _bmfsb = vm.runtime._buildMenuForScratchBlocks;
+    vm.runtime._buildMenuForScratchBlocks = function(menuName, menuInfo, categoryInfo) {
+      const res = _bmfsb.call(this, menuName, menuInfo, categoryInfo);
+      if (menuInfo.output) res.json.output = menuInfo.output;
+      if (menuInfo.outputShape) res.json.outputShape = menuInfo.outputShape;
+      return res;
+    }
     // Registering the new Argument/Block shape.
     const Blockly = ScratchBlocks;
     // thanks for the paths, thx very much Cubester!!
@@ -399,6 +406,16 @@
             },
           },
           {
+            opcode: 'arg_menu',
+            blockType: Scratch.BlockType.REPORTER,
+            text: 'menu [val]',
+            arguments: {
+              val: {
+                menu: 'abc'
+              },
+            },
+          },
+          {
             opcode: 'arg_block',
             blockType: Scratch.BlockType.REPORTER,
             text: '[val]',
@@ -423,11 +440,21 @@
             outputShape: ArgId,
           },
         ],
-        menus: {},
+        menus: {
+          abc: {
+            acceptReporters: true,
+            items: ['hehehe'],
+            output: Scratch.ArgumentType[ArgIdU],
+            outputShape: ArgId
+          }
+        },
       };
     },
     fns: [
       function arg(args) {
+        return args.val;
+      },
+      function arg_menu(args) {
         return args.val;
       },
       function block() {
